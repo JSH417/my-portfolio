@@ -1,0 +1,6 @@
+{
+  "appId": "com.invest.portfoliotracker",
+  "appName": "더리치트래커",
+  "webDir": "dist",
+  "bundledWebRuntime": false
+}
