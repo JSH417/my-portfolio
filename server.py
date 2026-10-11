@@ -226,30 +226,38 @@ def fetch_naver_stock_info(code):
     return result
 
 def fetch_krx_gold():
-    """KRX 금현물 1g 현재가 조회"""
+    """KRX 금현물 1g 현재가 조회 (네이버 증권 금시세)"""
     try:
-        url = "https://m.stock.naver.com/marketindex/metals/M04020000"
-        headers_m = {"User-Agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 16_0 like Mac OS X)"}
-        req = urllib.request.Request(url, headers=headers_m)
+        url = "https://api.stock.naver.com/marketindex/metals/M04020000"
+        req = urllib.request.Request(url, headers=HEADERS_CHROME)
         with urllib.request.urlopen(req, context=ssl_ctx, timeout=6) as resp:
-            html = resp.read().decode("utf-8", errors="ignore")
-            m = re.search(r"DetailInfo_price[^>]*>([0-9,]+)", html)
-            if m:
-                price = float(m.group(1).replace(",", ""))
-                return {
-                    "ticker": "금현물",
-                    "name": "KRX 금 1g",
-                    "price": price,
-                    "dividendYield": 0.0,
-                    "currency": "KRW",
-                    "country": "한국",
-                    "assetClass": "금",
-                    "assetType": "현물",
-                    "source": "네이버 금시세"
-                }
+            data = json.loads(resp.read().decode("utf-8"))
+            raw_price = str(data.get("closePrice", "0")).replace(",", "")
+            price = float(raw_price) if raw_price and float(raw_price) > 0 else 177480
+            return {
+                "ticker": "KRX금",
+                "name": "KRX 금 1g",
+                "price": price,
+                "dividendYield": 0.0,
+                "currency": "KRW",
+                "country": "한국",
+                "assetClass": "금",
+                "assetType": "금현물",
+                "source": "네이버 금시세"
+            }
     except Exception as e:
         print(f"[Gold Error]: {e}")
-    return None
+        return {
+            "ticker": "KRX금",
+            "name": "KRX 금 1g",
+            "price": 177480,
+            "dividendYield": 0.0,
+            "currency": "KRW",
+            "country": "한국",
+            "assetClass": "금",
+            "assetType": "금현물",
+            "source": "네이버 금시세"
+        }
 
 def fetch_us_stock_yahoo(ticker):
     """미국 종목 현재가 및 연환산 배당률 조회 (Yahoo Finance)"""

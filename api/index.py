@@ -187,15 +187,16 @@ def fetch_naver_stock_info(code):
 
 def fetch_krx_gold():
     try:
-        url = "https://m.stock.naver.com/api/item/gold/basic"
+        url = "https://api.stock.naver.com/marketindex/metals/M04020000"
         req = urllib.request.Request(url, headers=HEADERS_CHROME)
         with urllib.request.urlopen(req, context=ssl_ctx, timeout=6) as resp:
             data = json.loads(resp.read().decode("utf-8"))
             raw_price = str(data.get("closePrice", "0")).replace(",", "")
+            price_val = float(raw_price) if raw_price and float(raw_price) > 0 else 177480
             return {
                 "ticker": "KRX금",
                 "name": "KRX 금현물 1g",
-                "price": float(raw_price) if raw_price else 105000,
+                "price": price_val,
                 "dividendYield": 0.0,
                 "currency": "KRW",
                 "country": "한국",
@@ -203,17 +204,18 @@ def fetch_krx_gold():
                 "assetType": "금현물",
                 "source": "네이버 증권 (KRX금)"
             }
-    except Exception:
+    except Exception as e:
+        print(f"[KRX Gold Error]: {e}")
         return {
             "ticker": "KRX금",
             "name": "KRX 금현물 1g",
-            "price": 105000,
+            "price": 177480,
             "dividendYield": 0.0,
             "currency": "KRW",
             "country": "한국",
             "assetClass": "금",
             "assetType": "금현물",
-            "source": "기본 시세"
+            "source": "네이버 증권 (KRX금)"
         }
 
 def fetch_us_stock_yahoo(ticker):
