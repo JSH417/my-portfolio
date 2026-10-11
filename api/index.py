@@ -282,6 +282,48 @@ class handler(http.server.BaseHTTPRequestHandler):
         path = parsed.path
         params = urllib.parse.parse_qs(parsed.query)
 
+        # 0) 메인 페이지 및 정적 파일 서빙
+        if path in ["/", "/index.html", ""]:
+            candidates = [
+                os.path.join(os.getcwd(), "index.html"),
+                os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "index.html"),
+                "index.html"
+            ]
+            for c in candidates:
+                if os.path.exists(c):
+                    with open(c, "rb") as f:
+                        data = f.read()
+                    self.send_response(200)
+                    self.send_header("Content-Type", "text/html; charset=utf-8")
+                    self.end_headers()
+                    self.wfile.write(data)
+                    return
+
+        static_mime = {
+            "/manifest.json": "application/json",
+            "/sw.js": "application/javascript",
+            "/icon-192.png": "image/png",
+            "/icon-512.png": "image/png",
+            "/apple-touch-icon.png": "image/png",
+            "/favicon.png": "image/png"
+        }
+        if path in static_mime:
+            fname = path.lstrip("/")
+            candidates = [
+                os.path.join(os.getcwd(), fname),
+                os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), fname),
+                fname
+            ]
+            for c in candidates:
+                if os.path.exists(c):
+                    with open(c, "rb") as f:
+                        data = f.read()
+                    self.send_response(200)
+                    self.send_header("Content-Type", static_mime[path])
+                    self.end_headers()
+                    self.wfile.write(data)
+                    return
+
         if path.endswith("/api/fx") or path == "/api/fx":
             data = fetch_exchange_rate()
             self.send_response(200)
@@ -375,3 +417,4 @@ class handler(http.server.BaseHTTPRequestHandler):
 
         self.send_response(404)
         self.end_headers()
+
