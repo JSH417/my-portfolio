@@ -279,8 +279,9 @@ class handler(http.server.BaseHTTPRequestHandler):
 
     def do_GET(self):
         parsed = urllib.parse.urlparse(self.path)
-        path = parsed.path
         params = urllib.parse.parse_qs(parsed.query)
+        # Vercel rewrite 지원: __path__ 쿼리 또는 x-matched-path 또는 parsed.path 사용
+        path = params.get("__path__", [None])[0] or self.headers.get("x-matched-path") or parsed.path
 
         # 0) 메인 페이지 및 정적 파일 서빙
         if path in ["/", "/index.html", ""]:
@@ -395,7 +396,10 @@ class handler(http.server.BaseHTTPRequestHandler):
 
     def do_POST(self):
         parsed = urllib.parse.urlparse(self.path)
-        if "/api/config" in parsed.path:
+        params = urllib.parse.parse_qs(parsed.query)
+        path = params.get("__path__", [None])[0] or self.headers.get("x-matched-path") or parsed.path
+
+        if "/api/config" in path:
             content_length = int(self.headers.get("Content-Length", 0))
             post_body = self.rfile.read(content_length)
             try:
