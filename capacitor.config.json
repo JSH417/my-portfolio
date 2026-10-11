@@ -2,6 +2,10 @@
   "appId": "com.invest.portfoliotracker",
   "appName": "더리치트래커",
   "webDir": "dist",
-  "bundledWebRuntime": false
+  "bundledWebRuntime": false,
+  "server": {
+    "url": "https://my-portfolio-iota-lemon-80.vercel.app",
+    "cleartext": true
+  }
 }
 
