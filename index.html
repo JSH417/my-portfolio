@@ -231,54 +231,54 @@
 
   <!-- 상단 네비게이션 헤더 -->
   <header class="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-sm">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="flex items-center justify-between h-16">
+    <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-14 sm:h-16 gap-2">
         <!-- 로고 및 타이틀 -->
-        <div class="flex items-center space-x-3">
-          <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-700 to-indigo-600 flex items-center justify-center text-white shadow-md shadow-blue-500/20">
-            <i data-lucide="pie-chart" class="w-5 h-5"></i>
+        <div class="flex items-center space-x-2 sm:space-x-3 min-w-0">
+          <div class="w-8 h-8 sm:w-10 sm:h-10 shrink-0 rounded-xl bg-gradient-to-tr from-blue-700 to-indigo-600 flex items-center justify-center text-white shadow-md shadow-blue-500/20">
+            <i data-lucide="pie-chart" class="w-4 h-4 sm:w-5 sm:h-5"></i>
           </div>
-          <div>
-            <div class="flex items-center space-x-2">
-              <h1 class="text-lg font-bold text-slate-900 leading-tight">개인 투자 포트폴리오 트래커</h1>
-              <span class="text-xs bg-blue-100 text-blue-700 font-semibold px-2 py-0.5 rounded-full">Web MVP</span>
+          <div class="min-w-0">
+            <div class="flex items-center space-x-1.5">
+              <h1 class="text-sm sm:text-lg font-bold text-slate-900 leading-tight truncate">포트폴리오</h1>
+              <span class="text-[10px] sm:text-xs bg-blue-100 text-blue-700 font-semibold px-1.5 py-0.5 rounded-full shrink-0">MVP</span>
             </div>
             <p class="text-xs text-slate-500 hidden sm:block">한국·미국 ETF, 주식, 금, 현금 통합 관리 및 No-Sell 리밸런싱</p>
           </div>
         </div>
 
-        <!-- 우측 컨트롤: 통화 토글 & 환율 & 백업 -->
-        <div class="flex items-center space-x-2 sm:space-x-3">
+        <!-- 우측 컨트롤: 통화 토글 & 환율 & 테마 & 설정 -->
+        <div class="flex items-center space-x-1.5 sm:space-x-3 shrink-0">
           <!-- 환율 안내 & 설정 버튼 -->
           <div class="inline-flex rounded-lg border border-slate-200 bg-slate-50 p-0.5 items-center">
-            <button onclick="openFxModal()" class="flex items-center space-x-1.5 px-2 py-1 text-xs text-slate-700 hover:text-slate-900 transition" title="수동 환율 설정">
+            <button onclick="openFxModal()" class="flex items-center space-x-1 px-1.5 sm:px-2 py-1 text-xs text-slate-700 hover:text-slate-900 transition" title="수동 환율 설정">
               <span class="hidden md:inline text-slate-500">적용 환율:</span>
-              <span class="font-semibold" id="headerFxRateDisplay">$1 = 1,380원</span>
+              <span class="font-semibold text-[11px] sm:text-xs" id="headerFxRateDisplay">$1 = 1,380원</span>
             </button>
             <button onclick="syncFxRateAuto()" class="p-1 rounded hover:bg-slate-200 text-blue-600 transition" title="토스/실시간 환율 동기화">
-              <i data-lucide="refresh-cw" id="iconSyncFx" class="w-3.5 h-3.5"></i>
+              <i data-lucide="refresh-cw" id="iconSyncFx" class="w-3 h-3 sm:w-3.5 sm:h-3.5"></i>
             </button>
           </div>
 
           <!-- KRW / USD 표시 통화 토글 -->
           <div class="inline-flex rounded-lg border border-slate-200 bg-slate-100 p-0.5 shadow-inner">
-            <button id="btnCurrencyKRW" onclick="setDisplayCurrency('KRW')" class="px-2.5 py-1 text-xs font-semibold rounded-md transition shadow-sm bg-white text-blue-700">
-              ₩ KRW
+            <button id="btnCurrencyKRW" onclick="setDisplayCurrency('KRW')" class="px-2 sm:px-2.5 py-1 text-[11px] sm:text-xs font-semibold rounded-md transition shadow-sm bg-white text-blue-700">
+              ₩<span class="hidden sm:inline"> KRW</span>
             </button>
-            <button id="btnCurrencyUSD" onclick="setDisplayCurrency('USD')" class="px-2.5 py-1 text-xs font-semibold rounded-md transition text-slate-600 hover:text-slate-900">
-              $ USD
+            <button id="btnCurrencyUSD" onclick="setDisplayCurrency('USD')" class="px-2 sm:px-2.5 py-1 text-[11px] sm:text-xs font-semibold rounded-md transition text-slate-600 hover:text-slate-900">
+              $<span class="hidden sm:inline"> USD</span>
             </button>
           </div>
 
           <!-- 다크모드 / 라이트모드 테마 토글 (더리치 스타일) -->
-          <button id="btnThemeToggle" onclick="toggleTheme()" class="p-2 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 text-slate-600 transition shadow-xs flex items-center justify-center" title="다크모드/라이트모드 전환">
+          <button id="btnThemeToggle" onclick="toggleTheme()" class="p-1.5 sm:p-2 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 text-slate-600 transition shadow-xs flex items-center justify-center" title="다크모드/라이트모드 전환">
             <i data-lucide="moon" id="iconThemeMoon" class="w-4 h-4 hidden text-amber-400"></i>
             <i data-lucide="sun" id="iconThemeSun" class="w-4 h-4 text-amber-500"></i>
           </button>
 
           <!-- 데이터 관리 드롭다운 -->
           <div class="relative">
-            <button onclick="toggleDataMenu()" class="p-2 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 text-slate-600 transition" title="데이터 및 API 관리">
+            <button onclick="toggleDataMenu()" class="p-1.5 sm:p-2 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 text-slate-600 transition" title="데이터 및 API 관리">
               <i data-lucide="settings" class="w-4 h-4"></i>
             </button>
             <div id="dataMenuDropdown" class="hidden absolute right-0 mt-2 w-52 bg-white rounded-xl shadow-lg border border-slate-200 py-1.5 z-40 text-xs">
@@ -311,8 +311,8 @@
         </div>
       </div>
 
-      <!-- 탭 메뉴 바 -->
-      <nav class="flex space-x-1 sm:space-x-6 overflow-x-auto custom-scroll -mb-px text-sm">
+      <!-- 상단 탭 메뉴 바 (모바일에서는 하단 탭바로 대체하므로 sm 이상에서만 노출) -->
+      <nav class="hidden sm:flex space-x-1 sm:space-x-6 overflow-x-auto custom-scroll -mb-px text-sm">
         <button onclick="switchTab('dashboard')" id="tabNav-dashboard" class="tab-btn tab-active py-3 px-2 inline-flex items-center space-x-1.5 border-b-2 border-transparent text-slate-500 hover:text-slate-800 whitespace-nowrap">
           <i data-lucide="layout-dashboard" class="w-4 h-4"></i>
           <span>대시보드</span>
@@ -342,127 +342,127 @@
   </header>
 
   <!-- 메인 컨텐츠 영역 -->
-  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 pb-24 sm:pb-6 space-y-6">
+  <main class="flex-1 max-w-7xl w-full mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-6 pb-24 sm:pb-6 space-y-4 sm:space-y-6">
 
     <!-- 1. 대시보드 탭 -->
-    <section id="tab-dashboard" class="space-y-6">
+    <section id="tab-dashboard" class="space-y-4 sm:space-y-6">
       <!-- 핵심 KPI 카드 그리드 -->
-      <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3.5 sm:gap-4">
+      <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-2.5 sm:gap-4">
         <!-- 1) 현재 총자산 (클릭 시 스냅샷/자산기록 탭으로 이동) -->
-        <div onclick="switchTab('snapshots')" class="bg-gradient-to-br from-blue-600 via-indigo-600 to-indigo-700 text-white p-4.5 rounded-2xl shadow-lg shadow-blue-500/15 flex flex-col justify-between transition-all duration-200 hover:-translate-y-1 hover:shadow-xl hover:shadow-blue-500/25 active:scale-[0.98] cursor-pointer relative overflow-hidden group" title="클릭 시 자산 변화 기록(스냅샷) 탭으로 이동">
+        <div onclick="switchTab('snapshots')" class="bg-gradient-to-br from-blue-600 via-indigo-600 to-indigo-700 text-white p-3.5 sm:p-4.5 rounded-2xl shadow-lg shadow-blue-500/15 flex flex-col justify-between transition-all duration-200 hover:-translate-y-1 hover:shadow-xl hover:shadow-blue-500/25 active:scale-[0.98] cursor-pointer relative overflow-hidden group min-h-[105px]" title="클릭 시 자산 변화 기록(스냅샷) 탭으로 이동">
           <div class="absolute -right-3 -bottom-3 w-16 h-16 bg-white/10 rounded-full blur-sm pointer-events-none"></div>
-          <div class="flex items-center justify-between text-xs font-semibold text-blue-100 mb-2">
+          <div class="flex items-center justify-between text-xs font-semibold text-blue-100 mb-1.5">
             <span class="flex items-center space-x-1">
               <span>현재 총자산</span>
               <i data-lucide="chevron-right" class="w-3.5 h-3.5 opacity-60 group-hover:opacity-100 transition"></i>
             </span>
-            <div class="w-7 h-7 rounded-lg bg-white/20 flex items-center justify-center text-white">
-              <i data-lucide="coins" class="w-4 h-4"></i>
+            <div class="w-6 h-6 sm:w-7 sm:h-7 rounded-lg bg-white/20 flex items-center justify-center text-white shrink-0">
+              <i data-lucide="coins" class="w-3.5 h-3.5 sm:w-4 sm:h-4"></i>
             </div>
           </div>
-          <div class="text-xl sm:text-2xl font-extrabold tracking-tight tabular-nums" id="kpiTotalAssets">-</div>
-          <div class="text-[11px] text-blue-200/80 mt-1 font-medium">투자 자산 + 현금성 자산 &rarr;</div>
+          <div class="text-base sm:text-2xl font-extrabold tracking-tight tabular-nums truncate" id="kpiTotalAssets">-</div>
+          <div class="text-[10px] sm:text-[11px] text-blue-200/80 mt-1 font-medium truncate">투자 + 현금성 자산 &rarr;</div>
         </div>
 
         <!-- 2) 투자 자산 평가액 (클릭 시 포트폴리오 탭으로 이동) -->
-        <div onclick="switchTab('portfolio')" class="bg-white p-4.5 rounded-2xl border border-slate-200/80 shadow-xs flex flex-col justify-between transition-all duration-200 hover:-translate-y-1 hover:shadow-md hover:border-emerald-300 active:scale-[0.98] cursor-pointer group" title="클릭 시 보유 종목 포트폴리오 탭으로 이동">
-          <div class="flex items-center justify-between text-xs font-semibold text-slate-500 mb-2">
+        <div onclick="switchTab('portfolio')" class="bg-white p-3.5 sm:p-4.5 rounded-2xl border border-slate-200/80 shadow-xs flex flex-col justify-between transition-all duration-200 hover:-translate-y-1 hover:shadow-md hover:border-emerald-300 active:scale-[0.98] cursor-pointer group min-h-[105px]" title="클릭 시 보유 종목 포트폴리오 탭으로 이동">
+          <div class="flex items-center justify-between text-xs font-semibold text-slate-500 mb-1.5">
             <span class="flex items-center space-x-1">
               <span>투자 자산 평가액</span>
               <i data-lucide="chevron-right" class="w-3.5 h-3.5 opacity-0 group-hover:opacity-100 transition text-emerald-600"></i>
             </span>
-            <div class="w-7 h-7 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center">
-              <i data-lucide="trending-up" class="w-4 h-4"></i>
+            <div class="w-6 h-6 sm:w-7 sm:h-7 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
+              <i data-lucide="trending-up" class="w-3.5 h-3.5 sm:w-4 sm:h-4"></i>
             </div>
           </div>
-          <div class="text-lg sm:text-xl font-bold text-slate-900 tracking-tight tabular-nums" id="kpiInvestedAssets">-</div>
-          <div class="text-[11px] font-semibold text-emerald-600 mt-1" id="kpiInvestedRatio">비중 0.0%</div>
+          <div class="text-base sm:text-xl font-bold text-slate-900 tracking-tight tabular-nums truncate" id="kpiInvestedAssets">-</div>
+          <div class="text-[10px] sm:text-[11px] font-semibold text-emerald-600 mt-1 truncate" id="kpiInvestedRatio">비중 0.0%</div>
         </div>
 
         <!-- 3) 현금성 자산 (클릭 시 계좌 및 현금 탭으로 이동) -->
-        <div onclick="switchTab('cash')" class="bg-white p-4.5 rounded-2xl border border-slate-200/80 shadow-xs flex flex-col justify-between transition-all duration-200 hover:-translate-y-1 hover:shadow-md hover:border-amber-300 active:scale-[0.98] cursor-pointer group" title="클릭 시 계좌 및 현금 원장 탭으로 이동">
-          <div class="flex items-center justify-between text-xs font-semibold text-slate-500 mb-2">
+        <div onclick="switchTab('cash')" class="bg-white p-3.5 sm:p-4.5 rounded-2xl border border-slate-200/80 shadow-xs flex flex-col justify-between transition-all duration-200 hover:-translate-y-1 hover:shadow-md hover:border-amber-300 active:scale-[0.98] cursor-pointer group min-h-[105px]" title="클릭 시 계좌 및 현금 원장 탭으로 이동">
+          <div class="flex items-center justify-between text-xs font-semibold text-slate-500 mb-1.5">
             <span class="flex items-center space-x-1">
               <span>현금성 자산</span>
               <i data-lucide="chevron-right" class="w-3.5 h-3.5 opacity-0 group-hover:opacity-100 transition text-amber-600"></i>
             </span>
-            <div class="w-7 h-7 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center">
-              <i data-lucide="wallet-cards" class="w-4 h-4"></i>
+            <div class="w-6 h-6 sm:w-7 sm:h-7 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center shrink-0">
+              <i data-lucide="wallet-cards" class="w-3.5 h-3.5 sm:w-4 sm:h-4"></i>
             </div>
           </div>
-          <div class="text-lg sm:text-xl font-bold text-slate-900 tracking-tight tabular-nums" id="kpiCashAssets">-</div>
-          <div class="text-[11px] font-semibold text-amber-600 mt-1" id="kpiCashRatio">비중 0.0%</div>
+          <div class="text-base sm:text-xl font-bold text-slate-900 tracking-tight tabular-nums truncate" id="kpiCashAssets">-</div>
+          <div class="text-[10px] sm:text-[11px] font-semibold text-amber-600 mt-1 truncate" id="kpiCashRatio">비중 0.0%</div>
         </div>
 
         <!-- 4) 누적 투자 원금 (클릭 시 포트폴리오 탭으로 이동) -->
-        <div onclick="switchTab('portfolio')" class="bg-white p-4.5 rounded-2xl border border-slate-200/80 shadow-xs flex flex-col justify-between transition-all duration-200 hover:-translate-y-1 hover:shadow-md hover:border-slate-300 active:scale-[0.98] cursor-pointer group" title="클릭 시 보유 종목 포트폴리오 탭으로 이동">
-          <div class="flex items-center justify-between text-xs font-semibold text-slate-500 mb-2">
+        <div onclick="switchTab('portfolio')" class="bg-white p-3.5 sm:p-4.5 rounded-2xl border border-slate-200/80 shadow-xs flex flex-col justify-between transition-all duration-200 hover:-translate-y-1 hover:shadow-md hover:border-slate-300 active:scale-[0.98] cursor-pointer group min-h-[105px]" title="클릭 시 보유 종목 포트폴리오 탭으로 이동">
+          <div class="flex items-center justify-between text-xs font-semibold text-slate-500 mb-1.5">
             <span class="flex items-center space-x-1">
               <span>누적 투자 원금</span>
               <i data-lucide="chevron-right" class="w-3.5 h-3.5 opacity-0 group-hover:opacity-100 transition text-slate-500"></i>
             </span>
-            <div class="w-7 h-7 rounded-lg bg-slate-100 text-slate-600 flex items-center justify-center">
-              <i data-lucide="receipt" class="w-4 h-4"></i>
+            <div class="w-6 h-6 sm:w-7 sm:h-7 rounded-lg bg-slate-100 text-slate-600 flex items-center justify-center shrink-0">
+              <i data-lucide="receipt" class="w-3.5 h-3.5 sm:w-4 sm:h-4"></i>
             </div>
           </div>
-          <div class="text-lg sm:text-xl font-bold text-slate-900 tracking-tight tabular-nums" id="kpiCostBasis">-</div>
-          <div class="text-[11px] text-slate-400 mt-1">보유 종목 매입 총액</div>
+          <div class="text-base sm:text-xl font-bold text-slate-900 tracking-tight tabular-nums truncate" id="kpiCostBasis">-</div>
+          <div class="text-[10px] sm:text-[11px] text-slate-400 mt-1 truncate">보유 종목 매입 총액</div>
         </div>
 
         <!-- 5) 평가 손익 & 수익률 (클릭 시 포트폴리오 탭으로 이동) -->
-        <div onclick="switchTab('portfolio')" class="bg-white p-4.5 rounded-2xl border border-slate-200/80 shadow-xs flex flex-col justify-between transition-all duration-200 hover:-translate-y-1 hover:shadow-md hover:border-indigo-300 active:scale-[0.98] cursor-pointer group" title="클릭 시 보유 종목 포트폴리오 탭으로 이동">
-          <div class="flex items-center justify-between text-xs font-semibold text-slate-500 mb-2">
+        <div onclick="switchTab('portfolio')" class="bg-white p-3.5 sm:p-4.5 rounded-2xl border border-slate-200/80 shadow-xs flex flex-col justify-between transition-all duration-200 hover:-translate-y-1 hover:shadow-md hover:border-indigo-300 active:scale-[0.98] cursor-pointer group min-h-[105px]" title="클릭 시 보유 종목 포트폴리오 탭으로 이동">
+          <div class="flex items-center justify-between text-xs font-semibold text-slate-500 mb-1.5">
             <span class="flex items-center space-x-1">
               <span>평가 손익 / 수익률</span>
               <i data-lucide="chevron-right" class="w-3.5 h-3.5 opacity-0 group-hover:opacity-100 transition text-indigo-600"></i>
             </span>
-            <div class="w-7 h-7 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center">
-              <i data-lucide="activity" class="w-4 h-4"></i>
+            <div class="w-6 h-6 sm:w-7 sm:h-7 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center shrink-0">
+              <i data-lucide="activity" class="w-3.5 h-3.5 sm:w-4 sm:h-4"></i>
             </div>
           </div>
-          <div class="text-lg sm:text-xl font-bold tracking-tight tabular-nums" id="kpiTotalProfit">-</div>
-          <div class="text-xs font-bold mt-1" id="kpiTotalReturn">-</div>
+          <div class="text-base sm:text-xl font-bold tracking-tight tabular-nums truncate" id="kpiTotalProfit">-</div>
+          <div class="text-[10px] sm:text-xs font-bold mt-1 truncate" id="kpiTotalReturn">-</div>
         </div>
 
         <!-- 6) 받은 배당금 (누적) (클릭 시 배당 기록 & 추이 탭으로 이동) -->
-        <div onclick="switchTab('dividends')" class="bg-white p-4.5 rounded-2xl border border-slate-200/80 shadow-xs flex flex-col justify-between transition-all duration-200 hover:-translate-y-1 hover:shadow-md hover:border-purple-300 active:scale-[0.98] cursor-pointer group" title="클릭 시 배당 기록 & 추이 탭으로 이동">
-          <div class="flex items-center justify-between text-xs font-semibold text-slate-500 mb-2">
+        <div onclick="switchTab('dividends')" class="bg-white p-3.5 sm:p-4.5 rounded-2xl border border-slate-200/80 shadow-xs flex flex-col justify-between transition-all duration-200 hover:-translate-y-1 hover:shadow-md hover:border-purple-300 active:scale-[0.98] cursor-pointer group min-h-[105px]" title="클릭 시 배당 기록 & 추이 탭으로 이동">
+          <div class="flex items-center justify-between text-xs font-semibold text-slate-500 mb-1.5">
             <span class="flex items-center space-x-1">
               <span>누적 수령 배당금</span>
               <i data-lucide="chevron-right" class="w-3.5 h-3.5 opacity-0 group-hover:opacity-100 transition text-purple-600"></i>
             </span>
-            <div class="w-7 h-7 rounded-lg bg-purple-50 text-purple-600 flex items-center justify-center">
-              <i data-lucide="gift" class="w-4 h-4"></i>
+            <div class="w-6 h-6 sm:w-7 sm:h-7 rounded-lg bg-purple-50 text-purple-600 flex items-center justify-center shrink-0">
+              <i data-lucide="gift" class="w-3.5 h-3.5 sm:w-4 sm:h-4"></i>
             </div>
           </div>
-          <div class="text-lg sm:text-xl font-bold text-purple-700 tracking-tight tabular-nums" id="kpiTotalDividend">-</div>
-          <div class="text-[11px] text-slate-500 mt-1 font-medium" id="kpiAnnualEstDividend">예상 연 배당: -</div>
+          <div class="text-base sm:text-xl font-bold text-purple-700 tracking-tight tabular-nums truncate" id="kpiTotalDividend">-</div>
+          <div class="text-[10px] sm:text-[11px] text-slate-500 mt-1 font-medium truncate" id="kpiAnnualEstDividend">예상 연 배당: -</div>
         </div>
       </div>
 
       <!-- 기간별 자산 변화 배너 -->
-      <div class="bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 text-white rounded-2xl p-4.5 shadow-md border border-slate-800 flex flex-wrap items-center justify-between gap-4">
+      <div class="bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 text-white rounded-2xl p-4 sm:p-4.5 shadow-md border border-slate-800 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
         <div class="flex items-center space-x-2.5">
-          <div class="w-8 h-8 rounded-xl bg-blue-500/20 text-blue-400 flex items-center justify-center">
+          <div class="w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-blue-500/20 text-blue-400 flex items-center justify-center shrink-0">
             <i data-lucide="gauge" class="w-4 h-4"></i>
           </div>
           <span class="text-xs sm:text-sm font-semibold tracking-tight">스냅샷 기준 기간별 자산 변화</span>
         </div>
-        <div class="flex items-center space-x-3 sm:space-x-6 text-xs sm:text-sm">
-          <div class="bg-white/5 px-3 py-1.5 rounded-xl border border-white/5">
-            <span class="text-slate-400 mr-2">1일:</span>
-            <span class="font-bold tabular-nums" id="change1Day">-</span>
+        <div class="grid grid-cols-3 gap-2 sm:flex sm:items-center sm:space-x-4 text-xs sm:text-sm">
+          <div class="bg-white/5 p-2 sm:px-3 sm:py-1.5 rounded-xl border border-white/5 text-center sm:text-left">
+            <span class="text-slate-400 block sm:inline sm:mr-2 text-[10px] sm:text-xs">1일</span>
+            <span class="font-bold tabular-nums text-xs sm:text-sm" id="change1Day">-</span>
           </div>
-          <div class="bg-white/5 px-3 py-1.5 rounded-xl border border-white/5">
-            <span class="text-slate-400 mr-2">1주:</span>
-            <span class="font-bold tabular-nums" id="change1Week">-</span>
+          <div class="bg-white/5 p-2 sm:px-3 sm:py-1.5 rounded-xl border border-white/5 text-center sm:text-left">
+            <span class="text-slate-400 block sm:inline sm:mr-2 text-[10px] sm:text-xs">1주</span>
+            <span class="font-bold tabular-nums text-xs sm:text-sm" id="change1Week">-</span>
           </div>
-          <div class="bg-white/5 px-3 py-1.5 rounded-xl border border-white/5">
-            <span class="text-slate-400 mr-2">1개월:</span>
-            <span class="font-bold tabular-nums" id="change1Month">-</span>
+          <div class="bg-white/5 p-2 sm:px-3 sm:py-1.5 rounded-xl border border-white/5 text-center sm:text-left">
+            <span class="text-slate-400 block sm:inline sm:mr-2 text-[10px] sm:text-xs">1개월</span>
+            <span class="font-bold tabular-nums text-xs sm:text-sm" id="change1Month">-</span>
           </div>
         </div>
-        <button onclick="takeSnapshot()" class="text-xs bg-blue-600 hover:bg-blue-500 text-white px-3.5 py-2 rounded-xl transition font-semibold flex items-center space-x-1.5 shadow-sm">
+        <button onclick="takeSnapshot()" class="w-full sm:w-auto text-xs bg-blue-600 hover:bg-blue-500 text-white px-3.5 py-2.5 sm:py-2 rounded-xl transition font-semibold flex items-center justify-center space-x-1.5 shadow-sm">
           <i data-lucide="camera" class="w-3.5 h-3.5"></i>
           <span>오늘 자산 스냅샷 저장</span>
         </button>
@@ -3545,7 +3545,7 @@
   </script>
 
   <!-- 더리치 스타일 모바일 하단 고정 네비게이션 바 -->
-  <nav class="sm:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 dark:bg-[#131926]/95 backdrop-blur-lg border-t border-slate-200 dark:border-slate-800/80 px-2 py-1.5 flex justify-around items-center shadow-lg transition-colors">
+  <nav class="sm:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 dark:bg-[#131926]/95 backdrop-blur-lg border-t border-slate-200 dark:border-slate-800/80 px-2 pt-1 pb-[calc(0.375rem+env(safe-area-inset-bottom))] flex justify-around items-center shadow-lg transition-colors">
     <button onclick="switchTab('dashboard')" id="mobNav-dashboard" class="flex flex-col items-center justify-center py-1 px-2.5 rounded-xl text-blue-600 dark:text-blue-400 font-bold text-[10px] transition bg-blue-50/50 dark:bg-blue-500/10">
       <i data-lucide="layout-dashboard" class="w-5 h-5 mb-0.5"></i>
       <span>대시보드</span>
@@ -3569,7 +3569,7 @@
   </nav>
 
   <!-- 플로팅 토스트 알림 컨테이너 -->
-  <div id="toastContainer" class="fixed bottom-16 sm:bottom-6 left-1/2 -translate-x-1/2 z-50 flex flex-col items-center space-y-2 pointer-events-none"></div>
+  <div id="toastContainer" class="fixed bottom-[calc(4.5rem+env(safe-area-inset-bottom))] sm:bottom-6 left-1/2 -translate-x-1/2 z-50 flex flex-col items-center space-y-2 pointer-events-none"></div>
 </body>
 </html>
 

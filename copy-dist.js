@@ -22,3 +22,4 @@ files.forEach(f => {
   }
 });
 console.log('All web assets synced to dist/ successfully!');
+
