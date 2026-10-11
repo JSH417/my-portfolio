@@ -389,8 +389,9 @@ class handler(http.server.BaseHTTPRequestHandler):
             return
 
         self.send_response(404)
+        self.send_header("Content-Type", "application/json; charset=utf-8")
         self.end_headers()
-        self.wfile.write(b'{"error": "Endpoint not found"}')
+        self.wfile.write(json.dumps({"error": "Endpoint not found", "received_path": self.path, "parsed_path": path}).encode("utf-8"))
 
     def do_POST(self):
         parsed = urllib.parse.urlparse(self.path)
