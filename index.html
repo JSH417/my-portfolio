@@ -3439,7 +3439,7 @@
         }
       } catch (e) {
         console.warn('API Fx sync failed:', e);
-        showToast('로컬 서버(server.py) 연결을 확인해주세요. (현재 환율 유지)', 'error');
+        showToast('환율 서버 연결에 실패했습니다. (기존 환율 유지)', 'warning');
       } finally {
         if (icon) icon.classList.remove('animate-spin');
       }
