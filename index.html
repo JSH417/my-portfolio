@@ -242,6 +242,10 @@
             <div class="flex items-center space-x-1.5">
               <h1 class="text-sm sm:text-lg font-bold text-slate-900 leading-tight truncate">포트폴리오</h1>
               <span class="text-[10px] sm:text-xs bg-blue-100 text-blue-700 font-semibold px-1.5 py-0.5 rounded-full shrink-0">MVP</span>
+              <span id="cloudSyncBadge" class="hidden text-[10px] sm:text-xs font-semibold px-2 py-0.5 rounded-full items-center space-x-1 bg-emerald-50 text-emerald-700 border border-emerald-200 shrink-0" title="모바일-PC 실시간 클라우드 동기화 켜짐">
+                <i data-lucide="cloud" class="w-3 h-3"></i>
+                <span class="hidden sm:inline">실시간 연동</span>
+              </span>
             </div>
             <p class="text-xs text-slate-500 hidden sm:block">한국·미국 ETF, 주식, 금, 현금 통합 관리 및 No-Sell 리밸런싱</p>
           </div>
@@ -1697,6 +1701,7 @@
     let appData = loadData();
     let currentDividendYear = '2026';
     let charts = {}; // Chart.js 인스턴스 저장소
+    let isCloudSyncActive = false;
 
     function loadData() {
       try {
@@ -1708,10 +1713,66 @@
       return JSON.parse(JSON.stringify(initialSampleData));
     }
 
+    // 클라우드 KV 데이터 동기화 (최초 로드 및 백그라운드 갱신)
+    async function syncFromCloud(silent = false) {
+      try {
+        const res = await fetch('/api/data');
+        if (!res.ok) return;
+        const resJson = await res.json();
+        const badge = document.getElementById('cloudSyncBadge');
+
+        if (resJson.hasData && resJson.data) {
+          const cloudTime = new Date(resJson.data.lastUpdated || 0).getTime();
+          const localTime = new Date(appData.lastUpdated || 0).getTime();
+
+          // 클라우드 데이터가 로컬보다 최신이거나 로컬이 기본 샘플인 경우 동기화
+          if (cloudTime > localTime || !localStorage.getItem(STORAGE_KEY)) {
+            appData = resJson.data;
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(appData));
+            renderAll();
+            if (!silent) showToast('☁️ 클라우드에서 최신 포트폴리오를 동기화했습니다.', 'info');
+          }
+          if (badge) {
+            badge.classList.remove('hidden');
+            badge.classList.add('inline-flex');
+          }
+          isCloudSyncActive = true;
+        } else {
+          // 클라우드에 아직 데이터가 없으면 현재 로컬 데이터를 클라우드에 최초 등록
+          syncToCloud();
+        }
+      } catch (e) {
+        console.warn('Cloud sync load failed:', e);
+      }
+    }
+
+    async function syncToCloud() {
+      try {
+        const res = await fetch('/api/data', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(appData)
+        });
+        if (res.ok) {
+          const resJson = await res.json();
+          const badge = document.getElementById('cloudSyncBadge');
+          if (resJson.cloud && badge) {
+            badge.classList.remove('hidden');
+            badge.classList.add('inline-flex');
+            isCloudSyncActive = true;
+          }
+        }
+      } catch (e) {
+        console.warn('Cloud sync save failed:', e);
+      }
+    }
+
     function saveData() {
       appData.lastUpdated = new Date().toISOString();
       localStorage.setItem(STORAGE_KEY, JSON.stringify(appData));
       renderAll();
+      // 변경 시 클라우드 KV에 비동기로 즉시 저장 (PC-모바일 실시간 연동)
+      syncToCloud();
     }
 
     function resetToSampleData() {
@@ -3581,6 +3642,12 @@
     window.addEventListener('DOMContentLoaded', () => {
       initTheme();
       renderAll();
+      // 클라우드 KV에서 최신 데이터 자동 동기화
+      syncFromCloud();
+      // 다른 기기(모바일/PC)에서 수정한 내용 30초마다 자동 백그라운드 동기화
+      setInterval(() => {
+        syncFromCloud(true);
+      }, 30000);
     });
 
     // --- 17. 모바일 PWA 앱 설치 및 서비스 워커 등록 ---

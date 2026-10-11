@@ -38,7 +38,53 @@ toss_token_cache = {
     "expires_at": 0
 }
 
+# Upstash KV (Redis REST API) 환경 변수 지원
+KV_REST_API_URL = os.environ.get("KV_REST_API_URL", "").rstrip("/")
+KV_REST_API_TOKEN = os.environ.get("KV_REST_API_TOKEN", "")
+
+def kv_get(key):
+    if not KV_REST_API_URL or not KV_REST_API_TOKEN:
+        return None
+    try:
+        url = f"{KV_REST_API_URL}/get/{key}"
+        req = urllib.request.Request(
+            url,
+            headers={"Authorization": f"Bearer {KV_REST_API_TOKEN}"}
+        )
+        with urllib.request.urlopen(req, context=ssl_ctx, timeout=5) as resp:
+            data = json.loads(resp.read().decode("utf-8"))
+            result = data.get("result")
+            if result:
+                return json.loads(result) if isinstance(result, str) else result
+    except Exception as e:
+        print(f"[KV Get Error]: {e}")
+    return None
+
+def kv_set(key, val):
+    if not KV_REST_API_URL or not KV_REST_API_TOKEN:
+        return False
+    try:
+        url = f"{KV_REST_API_URL}/set/{key}"
+        payload = json.dumps(val).encode("utf-8") if not isinstance(val, (str, bytes)) else str(val).encode("utf-8")
+        req = urllib.request.Request(
+            url,
+            data=payload,
+            headers={
+                "Authorization": f"Bearer {KV_REST_API_TOKEN}",
+                "Content-Type": "application/json"
+            }
+        )
+        with urllib.request.urlopen(req, context=ssl_ctx, timeout=5) as resp:
+            return True
+    except Exception as e:
+        print(f"[KV Set Error]: {e}")
+    return False
+
 def load_config():
+    # 1) KV 스토리지 확인
+    cloud_cfg = kv_get("app_config")
+    if cloud_cfg and isinstance(cloud_cfg, dict):
+        return cloud_cfg
     if os.path.exists(CONFIG_FILE):
         try:
             with open(CONFIG_FILE, "r", encoding="utf-8") as f:
@@ -50,6 +96,7 @@ def load_config():
 def save_config(cfg):
     global memory_config
     memory_config.update(cfg)
+    kv_set("app_config", memory_config)
     try:
         with open(CONFIG_FILE, "w", encoding="utf-8") as f:
             json.dump(memory_config, f, ensure_ascii=False, indent=2)
@@ -377,6 +424,18 @@ class handler(http.server.BaseHTTPRequestHandler):
                 self.wfile.write(json.dumps({"error": f"종목 '{ticker}' 조회 실패"}, ensure_ascii=False).encode("utf-8"))
             return
 
+        elif "/api/data" in path:
+            # 클라우드 KV에서 전체 포트폴리오 데이터 조회
+            data = kv_get("portfolio_data")
+            self.send_response(200)
+            self.send_header("Content-Type", "application/json; charset=utf-8")
+            self.end_headers()
+            if data:
+                self.wfile.write(json.dumps({"hasData": True, "data": data}, ensure_ascii=False).encode("utf-8"))
+            else:
+                self.wfile.write(json.dumps({"hasData": False, "data": None}, ensure_ascii=False).encode("utf-8"))
+            return
+
         elif "/api/config" in path:
             cfg = load_config()
             client_id = cfg.get("toss_client_id", "")
@@ -401,7 +460,24 @@ class handler(http.server.BaseHTTPRequestHandler):
         params = urllib.parse.parse_qs(parsed.query)
         path = params.get("__path__", [None])[0] or self.headers.get("x-matched-path") or parsed.path
 
-        if "/api/config" in path:
+        if "/api/data" in path:
+            # 클라우드 KV에 전체 포트폴리오 데이터 영구 저장
+            content_length = int(self.headers.get("Content-Length", 0))
+            post_body = self.rfile.read(content_length)
+            try:
+                data = json.loads(post_body.decode("utf-8"))
+                ok = kv_set("portfolio_data", data)
+                self.send_response(200)
+                self.send_header("Content-Type", "application/json; charset=utf-8")
+                self.end_headers()
+                self.wfile.write(json.dumps({"success": ok, "cloud": bool(KV_REST_API_URL and KV_REST_API_TOKEN)}).encode("utf-8"))
+            except Exception as e:
+                self.send_response(400)
+                self.end_headers()
+                self.wfile.write(json.dumps({"error": str(e)}).encode("utf-8"))
+            return
+
+        elif "/api/config" in path:
             content_length = int(self.headers.get("Content-Length", 0))
             post_body = self.rfile.read(content_length)
             try:
