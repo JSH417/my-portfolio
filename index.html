@@ -1280,15 +1280,29 @@
         <div class="grid grid-cols-3 gap-3.5">
           <div>
             <label class="block font-semibold text-slate-700 mb-1.5">보유 수량 *</label>
-            <input type="number" id="assetQty" step="any" required placeholder="0" class="w-full bg-white border border-slate-200 rounded-xl px-3 py-2.5 font-medium focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 focus:outline-none transition">
+            <input type="number" id="assetQty" step="any" required placeholder="0" class="w-full bg-white border border-slate-200 rounded-xl px-3 py-2.5 font-medium focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 focus:outline-none transition" oninput="handleAssetCalc('qty')">
           </div>
           <div>
-            <label class="block font-semibold text-slate-700 mb-1.5">매입 원금 *</label>
-            <input type="number" id="assetCostBasis" step="any" required placeholder="원장 통화 기준" class="w-full bg-white border border-slate-200 rounded-xl px-3 py-2.5 font-medium focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 focus:outline-none transition">
+            <label class="block font-semibold text-slate-700 mb-1.5">평균 단가 (평단가)</label>
+            <input type="number" id="assetAvgPrice" step="any" placeholder="1주당 매수가" class="w-full bg-white border border-slate-200 rounded-xl px-3 py-2.5 font-medium focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 focus:outline-none transition" oninput="handleAssetCalc('avg')">
           </div>
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1.5">매입 원금 (총액) *</label>
+            <input type="number" id="assetCostBasis" step="any" required placeholder="수량 × 평단가" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 font-semibold focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 focus:outline-none transition" oninput="handleAssetCalc('cost')">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3.5">
           <div>
             <label class="block font-semibold text-slate-700 mb-1.5">현재가 *</label>
-            <input type="number" id="assetCurrentPrice" step="any" required placeholder="원장 통화 기준" class="w-full bg-white border border-slate-200 rounded-xl px-3 py-2.5 font-medium focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 focus:outline-none transition">
+            <input type="number" id="assetCurrentPrice" step="any" required placeholder="원장 통화 기준" class="w-full bg-white border border-slate-200 rounded-xl px-3 py-2.5 font-medium focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 focus:outline-none transition" oninput="handleAssetCalc('price')">
+          </div>
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1.5">실시간 예상 수익률</label>
+            <div id="assetProfitPreview" class="w-full bg-slate-100/70 border border-slate-200 rounded-xl px-3 py-2.5 font-bold text-slate-500 text-sm flex items-center justify-between">
+              <span>수익률: -</span>
+              <span class="text-xs font-normal text-slate-400">손익: -</span>
+            </div>
           </div>
         </div>
 
@@ -3102,6 +3116,8 @@
       document.getElementById('modalAssetTitle').textContent = '보유 종목 추가';
       document.getElementById('formAsset').reset();
       document.getElementById('assetEditId').value = '';
+      document.getElementById('assetAvgPrice').value = '';
+      updateAssetProfitPreview(0, 0, 'KRW');
       resetAssetFetchStatus();
       openModal('modalAsset');
     }
@@ -3120,12 +3136,69 @@
       document.getElementById('assetCurrency').value = ast.currency;
       document.getElementById('assetQty').value = ast.qty;
       document.getElementById('assetCostBasis').value = ast.costBasis;
+      // 평균 단가 계산 후 채우기 (매입원금 / 수량)
+      if (ast.qty > 0 && ast.costBasis > 0) {
+        const avg = ast.costBasis / ast.qty;
+        document.getElementById('assetAvgPrice').value = ast.currency === 'KRW' ? Math.round(avg * 100) / 100 : Math.round(avg * 10000) / 10000;
+      } else {
+        document.getElementById('assetAvgPrice').value = '';
+      }
       document.getElementById('assetCurrentPrice').value = ast.currentPrice;
       document.getElementById('assetTargetWeight').value = ast.targetWeight;
       document.getElementById('assetDividendYield').value = ast.dividendYield || 0;
+      handleAssetCalc('init');
       resetAssetFetchStatus();
       lastFetchedTicker = ast.ticker ? ast.ticker.toUpperCase() : '';
       openModal('modalAsset');
+    }
+
+    // 수량, 평단가, 매입원금, 현재가 실시간 양방향 자동 연산 및 수익률 프리뷰
+    function handleAssetCalc(trigger) {
+      const elQty = document.getElementById('assetQty');
+      const elAvg = document.getElementById('assetAvgPrice');
+      const elCost = document.getElementById('assetCostBasis');
+      const elPrice = document.getElementById('assetCurrentPrice');
+      const elCurrency = document.getElementById('assetCurrency');
+
+      let qty = parseFloat(elQty.value) || 0;
+      let avg = parseFloat(elAvg.value) || 0;
+      let cost = parseFloat(elCost.value) || 0;
+      let price = parseFloat(elPrice.value) || 0;
+      const currency = elCurrency ? elCurrency.value : 'KRW';
+
+      if (trigger === 'qty' || trigger === 'avg') {
+        // 수량 또는 평단가를 입력했을 때 -> 매입원금 자동 계산
+        if (qty > 0 && avg > 0) {
+          cost = qty * avg;
+          elCost.value = currency === 'KRW' ? Math.round(cost) : Math.round(cost * 100) / 100;
+        }
+      } else if (trigger === 'cost') {
+        // 매입원금을 직접 입력했을 때 -> 평단가 역산
+        if (qty > 0 && cost > 0) {
+          avg = cost / qty;
+          elAvg.value = currency === 'KRW' ? Math.round(avg * 100) / 100 : Math.round(avg * 10000) / 10000;
+        }
+      }
+
+      // 수익률 및 손익 실시간 프리뷰 갱신
+      updateAssetProfitPreview(cost, qty * price, currency);
+    }
+
+    function updateAssetProfitPreview(cost, evalVal, currency) {
+      const preview = document.getElementById('assetProfitPreview');
+      if (!preview) return;
+      if (cost > 0 && evalVal > 0) {
+        const profit = evalVal - cost;
+        const rate = (profit / cost) * 100;
+        const sign = profit >= 0 ? '+' : '';
+        const colorClass = profit >= 0 ? 'text-rose-600 bg-rose-50/70 border-rose-200' : 'text-blue-600 bg-blue-50/70 border-blue-200';
+        const profitStr = formatCurrency(profit, currency);
+        preview.className = `w-full border rounded-xl px-3 py-2.5 font-bold text-sm flex items-center justify-between transition-colors ${colorClass}`;
+        preview.innerHTML = `<span>수익률: ${sign}${rate.toFixed(2)}%</span><span class="text-xs font-semibold">손익: ${profitStr}</span>`;
+      } else {
+        preview.className = 'w-full bg-slate-100/70 border border-slate-200 rounded-xl px-3 py-2.5 font-bold text-slate-500 text-sm flex items-center justify-between';
+        preview.innerHTML = `<span>수익률: -</span><span class="text-xs font-normal text-slate-400">손익: -</span>`;
+      }
     }
 
     function handleAssetSubmit(e) {
@@ -3391,6 +3464,7 @@
           const priceStr = data.currency === 'KRW' ? '₩' + Math.round(data.price).toLocaleString('ko-KR') : '$' + data.price.toLocaleString('en-US');
           statusEl.textContent = `✅ [${data.ticker}] ${data.name || ''} : 현재가 ${priceStr}, 배당률 ${data.dividendYield}% 반영 (${data.source})`;
         }
+        handleAssetCalc('price');
       } catch (e) {
         if (statusEl) {
           statusEl.className = 'text-[10px] text-amber-600 block mt-0.5';
