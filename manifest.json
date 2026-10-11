@@ -1,0 +1,30 @@
+{
+  "name": "개인 투자 포트폴리오 트래커",
+  "short_name": "더리치트래커",
+  "description": "한국·미국 ETF, 주식, 배당금, 금, 현금 통합 관리 및 No-Sell 리밸런싱 트래커",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0b0f19",
+  "theme_color": "#0b0f19",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    }
+  ],
+  "categories": ["finance", "productivity"]
+}

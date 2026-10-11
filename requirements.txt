@@ -1,0 +1,2 @@
+# Python Standard Library only (urllib, http.server, json, ssl)
+# No external pip dependencies required.
